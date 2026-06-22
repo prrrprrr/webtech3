@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="navbar">
+        <a href="memory.html">Memory</a>
+        <a href="admin.html">admin</a>
+    </div>
+    <div class="game">
+        <div class="gameInfo">
+            <p>Beurten: <span id="turnCounterSpan">0</span></p>
+            <p>Gevonden paren <span id="pairCounterSpan">0</span>/<span id="totalPairSpan">18</span></p>
+            <p>Time spent:<br><span id="timerDisplay">0</span> seconds</p>
+        </div>
+        <div class="memory" id="memoryBoard"></div>
+    </div>
+    <div class="sidebar">
+        <div class="highscores">
+        <p>1. big mom</p>
+        <p>2. clowny</p>
+        <p>3. big man thin</p>
+        <p>4. Man's not hot</p>
+        <p>5. Shutdown</p>
+        </div>
+        <div class="newGameForm">
+            <h3>Card Type</h3>
+            <form onsubmit="submitForm(event)">
+                <div class="cardTypeInput">
+                    <div class="cardSelectInputOption">
+                        <label for="letters">
+                            Letters
+                            <input type="radio" name="cardTypeSelect" id="letters" value="letters">
+                        </label><br>
+                    </div>
+                    <div class="cardSelectInputOption">
+                        <label for="dogs">
+                            Dogs
+                            <input type="radio" name="cardTypeSelect" id="dogs" value="dogs">
+                        </label><br>
+                    </div>
+                    <div class="cardSelectInputOption">
+                        <label for="cats">
+                            Cats
+                            <input type="radio" name="cardTypeSelect" id="cats" value="cats">
+                        </label><br>
+                    </div>
+                    <div class="cardSelectInputOption">
+                        <label for="random">
+                            Random
+                            <input type="radio" name="cardTypeSelect" id="random" value="picsum">
+                        </label><br>
+                    </div>
+                </div>
+                <br>
+                <h3>Board Size</h3>
+                <br>
+                <div class="boardSizeInput">
+                    <div class="boardSizeInputOption">
+                        <label for="4">
+                            4
+                            <input type="radio" name="boardSizeSelect" id="4" value="4">
+                        </label><br>
+                        
+                    </div>
+                    <div class="boardSizeInputOption">
+                        <label for="5">
+                            5
+                            <input type="radio" name="boardSizeSelect" id="5" value="5">
+                        </label><br>
+                    
+                    </div>
+                    <div class="boardSizeInputOption">
+                        <label for="6">
+                            6
+                            <input type="radio" name="boardSizeSelect" id="6" value="6">
+                        </label><br>
+                        
+                    </div>
+                </div>
+                
+                <br>
+                <label for="OpenCardColor">
+                    
+                    <input type="color" name="openCardColor" id="OpenCardColor">
+                    openCardColor
+                </label><br>
+                <label for="ClosedCardColor">
+                    <input type="color" name="closedCardColor" id="ClosedCardColor">
+                    closedCardColor
+                </label><br>
+                <label for="FoundCardColor">
+                    <input type="color" name="foundCardColor" id="FoundCardColor">
+                    foundCardColor
+                </label>
+                
+                
+                
+                <br>
+                <br>
+                <input type="submit" value="New Game">
+
+            </form>
+        </div>
+    </div>
+
+<script src="scripts.js"></script>
+</body>
+</html>
