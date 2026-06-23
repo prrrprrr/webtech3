@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Document</title>
+    <title>Memory</title>
 </head>
 <body>
     <div class="navbar">
         <a href="memory.html">Memory</a>
-        <a href="admin.html">admin</a>
+        <a href="login.html">Login</a>
     </div>
     <div class="game">
         <div class="gameInfo">
@@ -20,7 +20,7 @@
         <div class="memory" id="memoryBoard"></div>
     </div>
     <div class="sidebar">
-        <div class="highscores">
+        <div class="highscores" id="HighScores">
         <p>1. big mom</p>
         <p>2. clowny</p>
         <p>3. big man thin</p>
@@ -58,7 +58,6 @@
                 </div>
                 <br>
                 <h3>Board Size</h3>
-                <br>
                 <div class="boardSizeInput">
                     <div class="boardSizeInputOption">
                         <label for="4">
@@ -80,6 +79,34 @@
                             <input type="radio" name="boardSizeSelect" id="6" value="6">
                         </label><br>
                         
+                    </div>
+                </div>
+
+                <h3>Shuffle</h3>
+                <div class="shuffleMenu">
+                    <div class="shuffleInputOption">
+                        <label for="noShuffle">
+                            None
+                            <input type="radio" name="shuffleRadio" id="noShuffle" value="none">
+                        </label><br>
+                    </div>
+                    <div class="shuffleInputOption">
+                        <label for="noShuffle">
+                            Easy
+                            <input type="radio" name="shuffleRadio" id="easyShuffle" value="2">
+                        </label><br>
+                    </div>
+                   <div class="shuffleInputOption">
+                        <label for="noShuffle">
+                            Medium
+                            <input type="radio" name="shuffleRadio" id="MediumSuffle" value="1.5">
+                        </label><br>
+                    </div>
+                   <div class="shuffleInputOption">
+                        <label for="noShuffle">
+                            Hard
+                            <input type="radio" name="shuffleRadio" id="HardShuffle" value="1">
+                        </label><br>
                     </div>
                 </div>
                 
@@ -107,6 +134,14 @@
             </form>
         </div>
     </div>
+
+    <div id="gameWonModal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h2>🎉 Victory! 🎉</h2>
+        <p>Incredible job! You cleared the board.</p>
+        <button id="closeBtn">Close</button>
+    </div>
+</div>
 
 <script src="scripts.js"></script>
 </body>

@@ -1,18 +1,20 @@
 //GameState
 const GameState = {
-    turn         : 0,
-    foundPairs   : 0,
-    cardType     : "letters",
-    boardSize    : 6,
-    openColor    : "",
-    closedColor  : "",
-    foundColor   : "",
-    turnedCards  : [],
+    turn           : 0,
+    foundPairs     : 0,
+    cardType       : "letters",
+    boardSize      : 6,
+    openColor      : "",
+    closedColor    : "",
+    foundColor     : "",
+    turnedCards    : [],
+    shuffle        : 0,
 
     get totalPairs() {
         return Math.floor((this.boardSize * this.boardSize) / 2);
     }
 };
+let urlRegistry = []
 
 //timer
 let timerDisplay   = document.getElementById('timerDisplay');
@@ -29,12 +31,13 @@ async function startNewGame() {
 async function submitForm(event) {
 
     event.preventDefault();
-    const formData = new FormData(event.target)
-    GameState.cardType = formData.get("cardTypeSelect")
-    GameState.boardSize = formData.get("boardSizeSelect")
-    GameState.openColor    = formData.get("openCardColor")
-    GameState.closedColor  = formData.get("closedCardColor")
-    GameState.foundColor   = formData.get("foundCardColor")
+    const formData             = new FormData(event.target)
+    GameState.cardType         = formData.get("cardTypeSelect")
+    GameState.boardSize        = formData.get("boardSizeSelect")
+    GameState.openColor        = formData.get("openCardColor")
+    GameState.closedColor      = formData.get("closedCardColor")
+    GameState.foundColor       = formData.get("foundCardColor")
+    GameState.shuffle          = setShuffleDifficulty(formData.get("shuffleRadio"));
     console.log(GameState)
     prepareGame()
 }
@@ -47,6 +50,8 @@ async function prepareGame() {
     
     //edit dom elements
     resetTimer()
+    urlRegistry.forEach( (url) => URL.revokeObjectURL(url))
+    urlRegistry = []
     document.getElementById("pairCounterSpan").innerHTML=GameState.foundPairs
     document.getElementById("totalPairSpan").innerHTML=GameState.totalPairs
     document.getElementById("turnCounterSpan").innerHTML=GameState.turn
@@ -54,16 +59,50 @@ async function prepareGame() {
 
     //set cssvalues(gridsize, cardColors)
     document.documentElement.style.setProperty('--cols', GameState.boardSize);
-
     document.documentElement.style.setProperty('--open-color', GameState.openColor);
     document.documentElement.style.setProperty('--closed-color', GameState.closedColor);
     document.documentElement.style.setProperty('--found-color', GameState.foundColor);
 
+
+    //pull highscores from backend
+    try {
+        top5 = await getHighScores()
+        console.log("we just recieved the scores")
+        console.log(top5)
+        createHighScoreForm(top5)
+    }catch(e){
+        document.getElementById("HighScores").innerHTML= "<h1>No highscores could be pulled</h1>"
+    }
     //use data to create new board(amount, cardType)
     createBoard(GameState.boardSize, GameState.cardType)
 }
-//main logic of the memory game
+
+/// GameEnd ///
+async function endGame(gamestate, timePassed) {
+    console.log("did we end")
+    //show endScreen
+    gameWonModal.classList.remove("hidden");
+
+
+    //calculate score
+    score = calculateScore(gamestate.turn, timePassed)
+
+    //produce winning screen TODO
+
+
+    //sumbit score
+    submitHighScore(gamestate.score, gamestate.cardType, gamestate.colorFound,gamestate.colorClosed)
+
+}
+
+function calculateScore(turn,timePassed) {
+    score = (turn * 10) + timePassed
+}
+
+
+/// MAIN MOVE FUNCTION ///
 async function makeMove(card) {
+    //start timer on first turn
     if(GameState.turn == 0 && GameState.turnedCards == 0){
         startTimer()
     }
@@ -87,21 +126,25 @@ async function makeMove(card) {
             await sleep(750)
             GameState.turnedCards.forEach(flipCardToClosed)
             GameState.turnedCards = []
-
         }   
-
         GameState.turn++
         document.getElementById("turnCounterSpan").innerHTML = GameState.turn
+
+        if (GameState.shuffle != 0 && GameState.turn % GameState.shuffle== 0 ) {
+            shuffleCards()
+        }
+
     }
     if(GameState.totalPairs == GameState.foundPairs){
         pauseTimer()
+        endGame(GameState, timePassed)
     }
     unlockBoard() //unlock board
 
 }
 
 
-
+/// FACTORY FOR CARDS ///
 function createCard(cardContent) {
     const newCard = document.createElement("div");
     newCard.classList.add("card")
@@ -112,7 +155,10 @@ function createCard(cardContent) {
         img.src = cardContent
         newCard.appendChild(img)
     }else{
-        newCard.textContent = cardContent
+        const span = document.createElement("span")
+        span.classList.add("memory-letter")
+        span.innerHTML = cardContent
+        newCard.appendChild(span)
     }
     return newCard
 }
@@ -187,9 +233,11 @@ async function getImageList(imageFunction) {
 /// API FUNCTIONS ///
 async function getCatImage(){
     try {
-        const resp = await fetch("https://cataas.com/cat?json=true");
-        const data = await resp.json()
-        return data.url
+        const resp = await fetch("https://cataas.com/cat");
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        urlRegistry.push(url)
+        return url
     } catch(err) {
         return getCatImage()
     }
@@ -207,11 +255,13 @@ async function getDogImage(){
 }
 async function getPicsumImage(){
     try {
-        const resp = await fetch("https://cataas.com/cat");
-        const data = await resp.json()
-        return data.url
+        const resp = await fetch("https://picsum.photos/200");
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        urlRegistry.push(url)
+        return url 
     } catch(err) {
-        return getCatImage()
+        return getPicsumImage()
     }
 }
 
@@ -229,7 +279,12 @@ function flipCardToFound(card) {
     card.classList.add("card-found")
 }
 
-
+function shuffleCards() {
+    const board = document.getElementById('memoryBoard');
+    const cards = Array.from(board.children); // get all card divs as an array
+    const shuffledCards = shuffle(cards)
+    cards.forEach(card => board.appendChild(card));
+}
 
 /// TIMER ///
 function startTimer() {
@@ -272,7 +327,7 @@ function shuffle(array) {
   return array;
 }
 
-//to prevent spamming cards while we are checking the flipped ones
+//to prevent spamming cards while checking the flipped ones
 function lockBoard() {
   document.querySelectorAll('.card-closed').forEach(card => {
     card.style.pointerEvents = 'none';
@@ -284,6 +339,7 @@ function unlockBoard() {
     card.style.pointerEvents = 'auto';
   });
 }
+
 //check if two DOM elements contain the same HTML
 function pairFound(card1,card2) {
     if(card1.innerHTML == card2.innerHTML) {
@@ -291,6 +347,107 @@ function pairFound(card1,card2) {
     }
     return false
 }
+function setShuffleDifficulty(input) {
+    return Math.floor((+input) * GameState.boardSize);
+}
 
+
+/// HIGHSCORES ///
+function createHighScoreForm(scores) {
+    console.log("we got some scores")
+    console.log(scores)
+    const highscores = document.getElementById("HighScores")
+    highscores.innerHTML = ''
+    let i = 1
+    scores.forEach( score => 
+        {
+            const highscore = document.createElement("p")
+            highscore.textContent = i+" "+score.username+": "+score.score
+            highscores.appendChild(highscore)
+            i++
+        }
+    )
+}
+
+async function getHighScores(){
+    const resp = await fetch("http://localhost:8000/memory/top-scores")
+    const data = await resp.json()
+    let top5 = []
+    data.forEach(item => top5.push(item))
+    console.log(top5)
+    return top5.slice(0,5)
+}
+
+async function submitHighScore(score, api, colorFound, colorClosed){
+    const token = localStorage.getItem("jwt_token");
+
+    if (!token) {
+        console.log("No token found. Redirecting to login...");
+        return;
+    }
+
+    const resp = await fetch("http://localhost:8000/game/save", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ 
+            score: score,
+            api: api ,
+            color_found: colorFound,
+            color_closed: colorClosed
+         })
+    })
+
+    if (!resp.ok) {
+        throw new Error(`Request failed: ${resp.status}`)
+    }
+
+    return resp.json() // or resp.text(), depending on what your server sends back
+}
+
+
+/// LOGIN AND REGISTER ///
+async function attemptLogin (params) {
+    event.preventDefault();
+    const formData = new FormData(event.target)
+    const GebruikersNaam = formData.get("gebruikersnaam")
+    const Wachtwoord = formData.get("wachtwoord")
+    try {
+        const response = await fetch("https://api.yourdomain.com/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username : GebruikersNaam, password: Wachtwoord })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Save the token under the key "jwt_token"
+            localStorage.setItem("jwt_token", data.token);
+            console.log("Token saved successfully!");
+        } else {
+            console.error("Login failed:", data.message);
+        }
+    } catch (error) {
+        console.error("Network error:", error);
+    }
+}
+
+
+async function attemptRegister(params) {
+    event.preventDefault();
+    const formData = new FormData(event.target)
+    const GebruikersNaam = formData.get("gebruikersnaam")
+    const Wachtwoord = formData.get("wachtwoord")
+}
+
+
+const gameWonModal = document.getElementById("gameWonModal");
+const playAgainBtn = document.getElementById("closeBtn");
+closeBtn.addEventListener("click", () => {
+    gameWonModal.classList.add("hidden");
+});
 
 startNewGame()
