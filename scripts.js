@@ -22,11 +22,78 @@ let timerInterval  = null;
 let timePassed     = 0;
 
 
+/// OVERWRITE OF FETCH FUNCTION ///
+const originalFetch = window.fetch;
+
+//het doel is om de JWT mee te sturen met elke request en om de TTL van de JWT te controleren bij elke request
+window.fetch = async function (resource, options = {}) {
+  options.headers = options.headers || {};
+  //use URL object to parse the url 
+  try {
+    const requestUrl = new URL(
+      typeof resource === 'string' ? resource : resource.url, 
+      window.location.origin
+    );
+
+    const isLocalhost = requestUrl.hostname === 'localhost' || requestUrl.hostname === '127.0.0.1';
+
+    if (isLocalhost) {
+      const token = localStorage.getItem('jwt_token');
+      //if we have a token we add the header
+      if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+        
+      }
+    }
+  } catch (error) {
+    // Fallback in case URL parsing fails on a malformed string
+    console.error('Fetch interceptor URL parsing failed:', error);
+  }
+
+  return originalFetch(resource, options);
+
+  /// HIER BEGINT HET GEKKE DEEL
+
+  const response = await originalFetch(resource, options);
+
+  //check of het een 401 is
+  if (response.status === 401) {
+    // We klonen de request om de originele niet aan te tasten
+    const clonedResponse = response.clone();
+    
+    try {
+      const data = await clonedResponse.json();
+      
+      // als de foutmelding jwt verlopen bevat
+      if (data.message === "jwt verlopen" || data.error === "jwt verlopen") {
+        handleExpiredSession();
+      }
+    } catch (e) {
+      const text = await clonedResponse.text();
+      if (text.includes("jwt verlopen")) {
+        handleExpiredSession();
+      }
+    }
+  }
+
+  return response;
+};
+
+/// STARTING AND PREPARING A GAME ///
 async function startNewGame() {
     prepareGame()
 }
 
+function handleExpiredSession() {
+    //remove expired token
+    localStorage.removeItem('jwt_token');
 
+    //alert player
+    alert("Je sessie is verlopen. Log opnieuw in om verder te spelen.");
+
+    //send to loginpage
+    window.location.href = "login.html"
+}
 //handles form submission
 async function submitForm(event) {
 
@@ -78,25 +145,29 @@ async function prepareGame() {
 }
 
 /// GameEnd ///
-async function endGame(gamestate, timePassed) {
+async function endGame(turn, cardType, colorFound, colorClosed, timePassed) {
     console.log("did we end")
+    console.log(turn, cardType, colorFound, colorClosed, timePassed)
+
+    //calculate score
+    score = calculateScore(turn, timePassed)
     //show endScreen
+    span = document.getElementById("scoreSpan").innerText = score
     gameWonModal.classList.remove("hidden");
 
 
-    //calculate score
-    score = calculateScore(gamestate.turn, timePassed)
+
 
     //produce winning screen TODO
 
 
     //sumbit score
-    submitHighScore(gamestate.score, gamestate.cardType, gamestate.colorFound,gamestate.colorClosed)
+    submitHighScore(score, cardType, colorFound, colorClosed)
 
 }
 
 function calculateScore(turn,timePassed) {
-    score = (turn * 10) + timePassed
+    return score = (turn * 10) + (timePassed*2)
 }
 
 
@@ -137,7 +208,7 @@ async function makeMove(card) {
     }
     if(GameState.totalPairs == GameState.foundPairs){
         pauseTimer()
-        endGame(GameState, timePassed)
+        endGame(GameState.turn, GameState.cardType, GameState.foundColor, GameState.closedColor, timePassed)
     }
     unlockBoard() //unlock board
 
@@ -379,8 +450,8 @@ async function getHighScores(){
 }
 
 async function submitHighScore(score, api, colorFound, colorClosed){
-    const token = localStorage.getItem("jwt_token");
-
+    console.log(score, api, colorFound, colorClosed)
+    const token = localStorage.getItem("jwt_token")
     if (!token) {
         console.log("No token found. Redirecting to login...");
         return;
@@ -390,7 +461,6 @@ async function submitHighScore(score, api, colorFound, colorClosed){
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({ 
             score: score,
@@ -409,13 +479,13 @@ async function submitHighScore(score, api, colorFound, colorClosed){
 
 
 /// LOGIN AND REGISTER ///
-async function attemptLogin (params) {
-    event.preventDefault();
-    const formData = new FormData(event.target)
-    const GebruikersNaam = formData.get("gebruikersnaam")
-    const Wachtwoord = formData.get("wachtwoord")
+async function attemptLogin (event) {
+    event.preventDefault()
+    const formData         = new FormData(event.target)
+    const GebruikersNaam   = formData.get("gebruikersnaam")
+    const Wachtwoord       = formData.get("wachtwoord")
     try {
-        const response = await fetch("https://api.yourdomain.com/login", {
+        const response = await fetch("http://localhost:8000/memory/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username : GebruikersNaam, password: Wachtwoord })
@@ -427,21 +497,67 @@ async function attemptLogin (params) {
             // Save the token under the key "jwt_token"
             localStorage.setItem("jwt_token", data.token);
             console.log("Token saved successfully!");
+            window.location.href = "memory.html"
         } else {
             console.error("Login failed:", data.message);
+            alert("kon niet inloggen")
+        }
+    } catch (error) {
+        console.error("Network error:", error);
+    }
+    
+}
+
+
+async function attemptRegister(event) {
+    event.preventDefault()
+    const formData        = new FormData(event.target)
+    const GebruikersNaam  = formData.get("gebruikersnaam")
+    const Wachtwoord      = formData.get("wachtwoord")
+    const Email           = formData.get("email")
+    try {
+        const response = await fetch("http://localhost:8000/memory/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username : GebruikersNaam, password: Wachtwoord, email: Email })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Token saved successfully!");
+        } else {
+            console.error("register failed:", data.message);
+            alert("kon niet registreren")
         }
     } catch (error) {
         console.error("Network error:", error);
     }
 }
+//make the login/logout button appear and dissapear when needed
+document.addEventListener("DOMContentLoaded", () => {
+    const loginLink = document.getElementById("login-link");
+    const logoutLink = document.getElementById("logout-link");
 
+    const isLoggedIn = localStorage.getItem("jwt_token") !== null;
 
-async function attemptRegister(params) {
-    event.preventDefault();
-    const formData = new FormData(event.target)
-    const GebruikersNaam = formData.get("gebruikersnaam")
-    const Wachtwoord = formData.get("wachtwoord")
-}
+    if (isLoggedIn) {
+        if (loginLink) loginLink.style.display = "none";     
+        if (logoutLink) logoutLink.style.display = "grid"; 
+    } else {
+        if (loginLink) loginLink.style.display = "grid";   
+        if (logoutLink) logoutLink.style.display = "none";   
+    }
+
+    // 3. Keep your logout functionality intact
+    if (logoutLink) {
+        logoutLink.addEventListener("click", (event) => {
+            event.preventDefault();
+            localStorage.removeItem("jwt_token");
+            window.location.replace("memory.html");
+        });
+    }
+});
 
 
 const gameWonModal = document.getElementById("gameWonModal");

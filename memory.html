@@ -8,8 +8,11 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="memory.html">Memory</a>
-        <a href="login.html">Login</a>
+        <div class="navbar-menu">
+            <a href="memory.html">Memory</a>
+            <a id="login-link" href="login.html">Login</a>
+            <a id="logout-link" href="#">Logout</a>
+        </div>
     </div>
     <div class="game">
         <div class="gameInfo">
@@ -138,7 +141,7 @@
     <div id="gameWonModal" class="modal-overlay hidden">
     <div class="modal-box">
         <h2>🎉 Victory! 🎉</h2>
-        <p>Incredible job! You cleared the board.</p>
+        <p>Incredible job! You cleared the board with <span id="scoreSpan"></span> points!</p>
         <button id="closeBtn">Close</button>
     </div>
 </div>

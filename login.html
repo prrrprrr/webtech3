@@ -19,6 +19,25 @@
         background-color: hsl(215.4 15.8% 48.4%);
         height: 120px;
         grid-area: navbar;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas: ". buttons";
+        a {     
+        min-width: 100px;
+        min-height: 25px;
+        max-width: 200px;
+        display: grid;
+        place-items: center;
+        background-color:hsl(216.6 26.1% 69.2%);
+        border-radius: 12px;
+        border-style: solid;
+        border-width: 2px;
+        border-color: hsl(215.4 15.8% 48.4%);
+    }
+    .navbar-menu {
+    max-width: 200px;
+    grid-area: buttons;
+}
     }
 
     .loginform {
@@ -62,8 +81,13 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="memory.html">Memory</a>
-        <a href="login.html">login</a>
+        <div class="navbar-menu">
+            <a href="memory.html">Memory</a>
+            <a id="login-link" href="login.html">Login</a>
+            <a id="logout-link" href="#">Logout</a>
+        </div>
+    </div>
+
     </div>
     <div class="loginform">
         <h1>Login</h1>
@@ -76,6 +100,7 @@
                 </label>
             </div>
             <br>
+
             <div class="invoerveld">
                 <label for="wachtwoord">
                     Wachtwoord
@@ -92,10 +117,18 @@
         <h1>Register</h1>
         <form onsubmit="attemptRegister(event)">
             <div class="invoerveld">
+                <label for="email">
+                    E-mail
+                    <br>
+                <input type="text" name="email" value="email">
+                </label>
+            </div>
+            <br>
+            <div class="invoerveld">
                 <label for="gebruikersnaam">
                     Gebruikersnaam
                     <br>
-                <input type="text" name="gebruikersnaam" value="gebruikersnaam">
+                    <input type="text" name="gebruikersnaam" value="gebruikersnaam">
                 </label>
             </div>
             <br>
