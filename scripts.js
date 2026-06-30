@@ -353,7 +353,7 @@ function flipCardToFound(card) {
 function shuffleCards() {
     const board = document.getElementById('memoryBoard');
     const cards = Array.from(board.children); // get all card divs as an array
-    const shuffledCards = shuffle(cards)
+    const shuffledcards = shuffle(cards) // returns an array but also edits original array
     cards.forEach(card => board.appendChild(card));
 }
 
@@ -387,15 +387,16 @@ function sleep(ms) {
 
 //shuffle the array
 function shuffle(array) {
-  // Loop from the last element down to the second element
-  for (let i = array.length - 1; i > 0; i--) {
+    newArray = array
+    // Loop from the last element down to the second element
+    for (let i = newArray.length - 1; i > 0; i--) {
     // Pick a random index from 0 to i
     const j = Math.floor(Math.random() * (i + 1));
     
     // Swap elements array[i] and array[j]
-    [array[i], array[j]] = [array[j], array[i]];
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
   }
-  return array;
+  return newArray;
 }
 
 //to prevent spamming cards while checking the flipped ones
@@ -549,7 +550,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (logoutLink) logoutLink.style.display = "none";   
     }
 
-    // 3. Keep your logout functionality intact
     if (logoutLink) {
         logoutLink.addEventListener("click", (event) => {
             event.preventDefault();
