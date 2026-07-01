@@ -14,7 +14,6 @@ const GameState = {
         return Math.floor((this.boardSize * this.boardSize) / 2);
     }
 };
-let urlRegistry = []
 
 //timer
 let timerDisplay   = document.getElementById('timerDisplay');
@@ -106,8 +105,6 @@ async function submitForm(event) {
     GameState.closedColor      = formData.get("closedCardColor")
     GameState.foundColor       = formData.get("foundCardColor")
     GameState.shuffle          = setShuffleDifficulty(formData.get("shuffleRadio")) ?? 0;
-    
-    console.log(GameState)
 
     prepareGame()
 }
@@ -120,8 +117,6 @@ async function prepareGame() {
     
     //edit dom elements
     resetTimer()
-    urlRegistry.forEach( (url) => URL.revokeObjectURL(url))
-    urlRegistry = []
     document.getElementById("pairCounterSpan").innerHTML=GameState.foundPairs
     document.getElementById("totalPairSpan").innerHTML=GameState.totalPairs
     document.getElementById("turnCounterSpan").innerHTML=GameState.turn
@@ -133,22 +128,13 @@ async function prepareGame() {
     document.documentElement.style.setProperty('--closed-color', GameState.closedColor);
     document.documentElement.style.setProperty('--found-color', GameState.foundColor);
 
+    createHighScoreForm(document.getElementById)
 
-    //pull highscores from backend
-    try {
-        top5 = await getHighScores()
-        createHighScoreForm(top5)
-    }catch(e){
-        document.getElementById("HighScores").innerHTML= "<h1>No highscores could be pulled</h1>"
-    }
-    //use data to create new board(amount, cardType)
     createBoard(GameState.boardSize, GameState.cardType)
 }
 
 /// GameEnd ///
 async function endGame(turn, cardType, colorFound, colorClosed, timePassed) {
-    console.log("did we end")
-    console.log(turn, cardType, colorFound, colorClosed, timePassed)
 
     //calculate score
     score = calculateScore(turn, timePassed)
@@ -156,13 +142,6 @@ async function endGame(turn, cardType, colorFound, colorClosed, timePassed) {
     span = document.getElementById("scoreSpan").innerText = score
     gameWonModal.classList.remove("hidden");
 
-
-
-
-    //produce winning screen TODO
-
-
-    //sumbit score
     submitHighScore(score, cardType, colorFound, colorClosed)
 
 }
@@ -308,7 +287,6 @@ async function getCatImage(){
         const resp = await fetch("https://cataas.com/cat");
         const blob = await resp.blob();
         const url = URL.createObjectURL(blob);
-        urlRegistry.push(url)
         return url
     } catch(err) {
         return getCatImage()
@@ -330,7 +308,6 @@ async function getPicsumImage(){
         const resp = await fetch("https://picsum.photos/200");
         const blob = await resp.blob();
         const url = URL.createObjectURL(blob);
-        urlRegistry.push(url)
         return url 
     } catch(err) {
         return getPicsumImage()
@@ -426,13 +403,13 @@ function setShuffleDifficulty(input) {
 
 
 /// HIGHSCORES ///
-function createHighScoreForm(scores) {
-    console.log("we got some scores")
-    console.log(scores)
+async function createHighScoreForm() {
     const highscores = document.getElementById("HighScores")
-    highscores.innerHTML = ''
-    let i = 1
-    scores.forEach( score => 
+    try {
+        let scores = await getHighScores()
+        highscores.innerHTML = ''
+        let i = 1
+        scores.forEach( score => 
         {
             const highscore = document.createElement("p")
             highscore.textContent = i+" "+score.username+": "+score.score
@@ -440,6 +417,11 @@ function createHighScoreForm(scores) {
             i++
         }
     )
+    } catch (error) {
+        highscores.innerHTML= "<h1>No highscores could be pulled</h1>"
+    }
+    
+    
 }
 
 async function getHighScores(){
@@ -499,7 +481,7 @@ async function attemptLogin (event) {
             // Save the token under the key "jwt_token"
             localStorage.setItem("jwt_token", data.token);
             console.log("Token saved successfully!");
-            window.location.href = "memory.html"
+            window.location.href = "index.html"
         } else {
             console.error("Login failed:", data.message);
             alert("kon niet inloggen")
@@ -555,7 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
         logoutLink.addEventListener("click", (event) => {
             event.preventDefault();
             localStorage.removeItem("jwt_token");
-            window.location.replace("memory.html");
+            window.location.replace("index.html");
         });
     }
 });
