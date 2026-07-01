@@ -98,14 +98,17 @@ function handleExpiredSession() {
 async function submitForm(event) {
 
     event.preventDefault();
+
     const formData             = new FormData(event.target)
-    GameState.cardType         = formData.get("cardTypeSelect")
-    GameState.boardSize        = formData.get("boardSizeSelect")
+    GameState.cardType         = formData.get("cardTypeSelect") ?? "letters"
+    GameState.boardSize        = formData.get("boardSizeSelect") ?? 6
     GameState.openColor        = formData.get("openCardColor")
     GameState.closedColor      = formData.get("closedCardColor")
     GameState.foundColor       = formData.get("foundCardColor")
-    GameState.shuffle          = setShuffleDifficulty(formData.get("shuffleRadio"));
+    GameState.shuffle          = setShuffleDifficulty(formData.get("shuffleRadio")) ?? 0;
+    
     console.log(GameState)
+
     prepareGame()
 }
 //prepares the game with the new settings
@@ -134,8 +137,6 @@ async function prepareGame() {
     //pull highscores from backend
     try {
         top5 = await getHighScores()
-        console.log("we just recieved the scores")
-        console.log(top5)
         createHighScoreForm(top5)
     }catch(e){
         document.getElementById("HighScores").innerHTML= "<h1>No highscores could be pulled</h1>"
@@ -549,7 +550,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (logoutLink) logoutLink.style.display = "none";   
     }
 
-    // 3. Keep your logout functionality intact
     if (logoutLink) {
         logoutLink.addEventListener("click", (event) => {
             event.preventDefault();
