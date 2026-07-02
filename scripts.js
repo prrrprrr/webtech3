@@ -128,7 +128,7 @@ async function prepareGame() {
     document.documentElement.style.setProperty('--closed-color', GameState.closedColor);
     document.documentElement.style.setProperty('--found-color', GameState.foundColor);
 
-    createHighScoreForm(document.getElementById)
+    createHighScoreForm()
 
     createBoard(GameState.boardSize, GameState.cardType)
 }
@@ -142,7 +142,8 @@ async function endGame(turn, cardType, colorFound, colorClosed, timePassed) {
     span = document.getElementById("scoreSpan").innerText = score
     gameWonModal.classList.remove("hidden");
 
-    submitHighScore(score, cardType, colorFound, colorClosed)
+    await submitHighScore(score, cardType, colorFound, colorClosed)
+    createHighScoreForm()
 
 }
 
@@ -505,11 +506,15 @@ async function attemptRegister(event) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username : GebruikersNaam, password: Wachtwoord, email: Email })
         });
-
-        const data = await response.json();
+        try {
+            const data = await response.json();
+        } catch (error) {
+            console.log("this empty json is the issue")
+        }
+        
 
         if (response.ok) {
-            console.log("Token saved successfully!");
+            alert("registreren gelukt!")
         } else {
             console.error("register failed:", data.message);
             alert("kon niet registreren")
