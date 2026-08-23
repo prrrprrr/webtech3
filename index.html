@@ -8,10 +8,15 @@
 </head>
 <body>
     <div class="navbar">
+        <div class="logo-image">
+            <img src="logo.png" alt="">
+        </div>
         <div class="navbar-menu">
-            <a href="index.html">Memory</a>
-            <a id="login-link" href="login.html">Login</a>
-            <a id="logout-link" href="#">Logout</a>
+            <div class="nav-menu-login">
+                <a id="login-link" href="login.html">Login</a>
+                <a id="logout-link" href="#">Logout</a>
+            </div>
+
         </div>
     </div>
     <div class="game">
@@ -25,109 +30,102 @@
     <div class="sidebar">
         <div class="highscores" id="HighScores">
         </div>
-        <div class="newGameForm">
+        <div class="newGameDiv">
             <h3>Card Type</h3>
-            <form onsubmit="submitForm(event)">
+            <form class="newGameForm" id="newGameForm">
                 <div class="cardTypeInput">
-                    <div class="cardSelectInputOption">
+                    <div class="radioInputOption">
                         <label for="letters">
                             Letters
                             <input type="radio" name="cardTypeSelect" id="letters" value="letters">
                         </label><br>
                     </div>
-                    <div class="cardSelectInputOption">
+                    <div class="radioInputOption">
                         <label for="dogs">
                             Dogs
                             <input type="radio" name="cardTypeSelect" id="dogs" value="dogs">
                         </label><br>
                     </div>
-                    <div class="cardSelectInputOption">
+                    <div class="radioInputOption">
                         <label for="cats">
                             Cats
                             <input type="radio" name="cardTypeSelect" id="cats" value="cats">
                         </label><br>
                     </div>
-                    <div class="cardSelectInputOption">
+                    <div class="radioInputOption">
                         <label for="random">
                             Random
                             <input type="radio" name="cardTypeSelect" id="random" value="picsum">
                         </label><br>
                     </div>
                 </div>
-                <br>
                 <h3>Board Size</h3>
                 <div class="boardSizeInput">
-                    <div class="boardSizeInputOption">
+                    <div class="radioInputOption">
                         <label for="4">
                             4
                             <input type="radio" name="boardSizeSelect" id="4" value="4">
                         </label><br>
                         
                     </div>
-                    <div class="boardSizeInputOption">
+                    <div class="radioInputOption">
                         <label for="5">
                             5
                             <input type="radio" name="boardSizeSelect" id="5" value="5">
                         </label><br>
                     
                     </div>
-                    <div class="boardSizeInputOption">
+                    <div class="radioInputOption">
                         <label for="6">
                             6
                             <input type="radio" name="boardSizeSelect" id="6" value="6">
-                        </label><br>
+                        </label>
                         
                     </div>
                 </div>
-
                 <h3>Shuffle</h3>
                 <div class="shuffleMenu">
-                    <div class="shuffleInputOption">
+                    <div class="radioInputOption">
                         <label for="noShuffle">
                             None
                             <input type="radio" name="shuffleRadio" id="noShuffle" value="none">
-                        </label><br>
+                        </label>
                     </div>
-                    <div class="shuffleInputOption">
-                        <label for="noShuffle">
+                    <div class="radioInputOption">
+                        <label for="easyShuffle">
                             Easy
                             <input type="radio" name="shuffleRadio" id="easyShuffle" value="2">
-                        </label><br>
+                        </label>
                     </div>
-                   <div class="shuffleInputOption">
-                        <label for="noShuffle">
+                   <div class="radioInputOption">
+                        <label for="MediumSuffle">
                             Medium
                             <input type="radio" name="shuffleRadio" id="MediumSuffle" value="1.5">
-                        </label><br>
+                        </label>
                     </div>
-                   <div class="shuffleInputOption">
-                        <label for="noShuffle">
+                   <div class="radioInputOption">
+                        <label for="HardShuffle">
                             Hard
                             <input type="radio" name="shuffleRadio" id="HardShuffle" value="1">
-                        </label><br>
+                        </label>
                     </div>
                 </div>
-                
-                <br>
-                <label for="OpenCardColor">
-                    
-                    <input type="color" name="openCardColor" id="OpenCardColor" value="hsl(216.6 26.1% 69.2%)">
-                    openCardColor
-                </label><br>
-                <label for="ClosedCardColor">
-                    <input type="color" name="closedCardColor" id="ClosedCardColor" value="hsl(216 17% 28.8%)">
-                    closedCardColor
-                </label><br>
-                <label for="FoundCardColor">
-                    <input type="color" name="foundCardColor" id="FoundCardColor" value="hsl(215.4 15.8% 48.4%)">
-                    foundCardColor
-                </label>
-                
-                
-                
-                <br>
-                <br>
-                <input type="submit" value="New Game">
+                <div class="colorSelect">
+                    <label for="OpenCardColor">
+                        <input type="color" name="openCardColor" id="OpenCardColor" value="#a4b6cb">
+                        openCardColor
+                    </label>
+                    <label for="ClosedCardColor">
+                        <input type="color" name="closedCardColor" id="ClosedCardColor" value="#3d4756">
+                        closedCardColor
+                    </label>
+                    <label for="FoundCardColor">
+                        <input type="color" name="foundCardColor" id="FoundCardColor" value="#64748b">
+                        foundCardColor
+                    </label>
+                </div>
+
+                <input type="submit" value="New Game" id="newGameFormButton">
 
             </form>
         </div>
@@ -140,7 +138,8 @@
         <button id="closeBtn">Close</button>
     </div>
 </div>
+<script src="main.js" type="module"></script>
+<script src="memory.js" type="module"></script>
 
-<script src="scripts.js"></script>
 </body>
 </html>

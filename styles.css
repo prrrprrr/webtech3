@@ -13,28 +13,32 @@
   --open-color:var(--color-slate-300);
   --found-color: var(--color-slate-500);
   --closed-color: var(--color-slate-700);
+  --nice-background: #FEEACF
 }
 
 body{
+    height: 100vh;
     padding: 0px;
     margin: 0px;
-    background-color: var(--color-slate-50);
+    background-color: var(--nice-background);
     display: grid;
     gap: 10px;
-    grid-template-rows: 5% 5% 1fr 5%;
+    grid-template-rows: 100px 64px 1fr 5%;
     grid-template-areas: "header" "gameInfo" "game" "sidebar";
+    min-width: 0;
+    min-height: 0;
 }
 .navbar {
     display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas: ". buttons";
-    background-color: var(--color-slate-500);
+    grid-template-columns: 100px 1fr auto;
+    grid-template-areas: "image . buttons";
+    background-color: var(--nice-background);
     grid-area: header;
     gap: 10px;
     max-height: 100px;
     a {     
-        min-width: 100px;
-        min-height: 25px;
+        width: 80px;
+        height: 40px; 
         max-width: 200px;
         display: grid;
         place-items: center;
@@ -44,17 +48,30 @@ body{
         border-width: 2px;
         border-color: var(--color-slate-500);
     }
+    .logo-image {
+        grid-area: image;
+        max-width: 100px;
+        max-height: 100px;
+        img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    }
+    .navbar-menu {
+        display: grid;
+        padding: 8px;
+        grid-area: buttons;
+        gap: 10px;
+    }
 }
-.navbar-menu {
-    max-width: 200px;
-    grid-area: buttons;
-}
+
 .game {
     grid-area: game;
     display: grid;
-    grid-template-columns: 1fr;
     grid-template-rows: 120px 1fr ;
     grid-template-areas: "gameinfo" "memory";
+    min-width: 0;
+    min-height: 0;
     
 }
 .gameInfo {
@@ -77,10 +94,12 @@ body{
 .memory {
     grid-area: memory;
     display: grid;
-    padding: 20px;
-    gap: 10px;
+    padding: 8px;
+    gap: 8px;
     grid-template-columns: repeat(var(--cols, 4), 1fr);
     grid-template-rows: repeat(var(--cols, 4), 1fr);
+    min-width: 0;
+    min-height: 0;
     /* document.querySelector('.grid').style.setProperty('--cols', 6); use this to change grid temp columns*/
 }
 .boardSizeInput {
@@ -100,7 +119,8 @@ body{
     gap: 10px;
     margin-right: 10px;
 }
-.cardSelectInputOption:has(input[type=radio]) {
+
+.radioInputOption:has(input[type=radio]) {
     display: grid;
     place-items: center;
     text-align: center;
@@ -110,8 +130,8 @@ body{
         opacity: 0;
     }
     label:has(input[type=radio]) {
-        min-width: 100px;
-        min-height: 50px;
+        min-width: 80px;
+        min-height: 32px;
         display: grid;
         place-items: center;
         background-color: var(--color-slate-300);
@@ -123,71 +143,21 @@ body{
     label:has(input[type=radio]:checked) {
         background: var(--color-slate-500);
     }
+}
+.colorSelect{
+    padding: 16px;
+    display: grid;
 }
 
-.boardSizeInputOption:has(input[type=radio]) {
-    display: grid;
-    place-items: center;
-    text-align: center;
-    user-select: none;
-    
-    input {
-        position: absolute;
-        opacity: 0;
-    }
-    label:has(input[type=radio]) {
-        min-width: 100px;
-        min-height: 50px;
-        display: grid;
-        place-items: center;
-        background-color: var(--color-slate-300);
-        border-style: solid;
-        border-width: 2px;
-        border-radius: 12px;
-        border-color: var(--color-slate-500);
-        
-    }
-    label:has(input[type=radio]:checked) {
-        background: var(--color-slate-500);
-    }
-}
-
-.shuffleInputOption:has(input[type=radio]) {
-    display: grid;
-    place-items: center;
-    text-align: center;
-    user-select: none;
-    position: relative;
-    input {
-        position: absolute;
-        opacity: 0;
-        width: 100%;
-        height: 100%;
-    }
-    label:has(input[type=radio]) {
-        min-width: 100px;
-        min-height: 50px;
-        display: grid;
-        place-items: center;
-        background-color: var(--color-slate-300);
-        border-radius: 12px;
-        border-style: solid;
-        border-width: 2px;
-        border-color: var(--color-slate-500);
-    }
-    label:has(input[type=radio]:checked) {
-        background: var(--color-slate-500);
-    }
-}
 .card{
     background-color: var(--color-slate-700);
     display: grid;
     place-items: center;
     user-select: none;
     border-radius: 15px;
+    min-width: 0;
+    min-height: 0;
     border-color: var(--color-slate-700);
-    min-width: 40px;
-    max-height: 100px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     img {
         max-width: 100%;
@@ -197,8 +167,6 @@ body{
         min-width: 0 ;
         min-height: 0;
     }
-
-
 }
 .card:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
@@ -282,7 +250,7 @@ body{
 }
 
 @media (min-width: 768px) {
-    body{
+    /* body{
         grid-template-columns: 3fr 1fr;
         grid-template-rows: 10% 1fr;
         grid-template-areas: "header header" "game sidebar";
@@ -290,5 +258,50 @@ body{
     .card {
         min-width: 80px;
         min-height: 150px;
+    }
+    .shuffleInputOption:has(input[type=radio]) {
+        label:has(input[type=radio]) {
+            min-width: 100px;
+            min-height: 50px;
+        }
+    }
+    .cardSelectInputOption:has(input[type=radio]) {
+        label:has(input[type=radio]) {
+            min-width: 100px;
+            min-height: 50px;
+        }
+    }
+    .boardSizeInputOption:has(input[type=radio]) {
+        label:has(input[type=radio]) {
+            min-width: 100px;
+            min-height: 50px;
+        }
+    }
+    .memory {
+        padding: 16px;
+        gap: 8px;
+    } */
+}
+@media (min-width: 1024px) {
+body{
+        height: 100vh;
+        width: 100vw;
+        grid-template-columns: 3fr 1fr;
+        grid-template-rows: 10% 1fr;
+        grid-template-areas: "header header" "game sidebar";
+    }
+    .card {
+        min-width: 80px;
+        min-height: 150px;
+    }
+    .radioInputOption:has(input[type=radio]) {
+        label:has(input[type=radio]) {
+            min-width: 100px;
+            min-height: 50px;
+        }
+    }
+    .memory {
+        padding: 16px;
+        gap: 8px;
     }
 }

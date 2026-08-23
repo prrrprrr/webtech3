@@ -5,72 +5,124 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Document</title>
 <style>
-
+    :root {
+        --color-slate-50: hsl(214.3 25.9% 94.7%);
+        --color-slate-100: hsl(216.9 24.5% 89.6%);
+        --color-slate-200: hsl(217.8 25.7% 79.4%);
+        --color-slate-300: hsl(216.6 26.1% 69.2%);
+        --color-slate-400: hsl(215.7 22.5% 59%);
+        --color-slate-500: hsl(215.4 15.8% 48.4%);
+        --color-slate-600: hsl(215.6 16.3% 38.4%);
+        --color-slate-700: hsl(216 17% 28.8%);
+        --color-slate-800: hsl(214.7 18.8% 19.8%);
+        --color-slate-900: hsl(215 20.7% 11.4%);
+        --color-slate-950: hsl(213.3 25.7% 6.9%);
+        --open-color:var(--color-slate-300);
+        --found-color: var(--color-slate-500);
+        --closed-color: var(--color-slate-700);
+        --nice-background: #FEEACF
+    }
     body {
         display: grid;
         grid-template-rows: 120px 1fr 1fr;
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas: "navbar navbar" "loginform registerform";
+        grid-template-columns: 1fr;
+        grid-template-areas: "navbar" "loginform" "registerform";
         margin: 0;
-        background-color: hsl(214.3 25.9% 94.7%);;
+        background-color: var( --nice-background);;
         gap: 10px;
     }
     .navbar {
-        background-color: hsl(215.4 15.8% 48.4%);
         height: 120px;
         grid-area: navbar;
         display: grid;
-        grid-template-columns: 1fr auto;
-        grid-template-areas: ". buttons";
+        grid-template-columns: 100px 1fr auto;
+        grid-template-areas: "image . buttons";
         a {     
-        min-width: 100px;
-        min-height: 25px;
-        max-width: 200px;
-        display: grid;
-        place-items: center;
-        background-color:hsl(216.6 26.1% 69.2%);
-        border-radius: 12px;
-        border-style: solid;
-        border-width: 2px;
-        border-color: hsl(215.4 15.8% 48.4%);
-    }
-    .navbar-menu {
-    max-width: 200px;
-    grid-area: buttons;
-}
+            width: 80px;
+            height: 40px; 
+            max-width: 200px;
+            display: grid;
+            place-items: center;
+            background-color: var(--color-slate-300);
+            border-radius: 12px;
+            border-style: solid;
+            border-width: 2px;
+            border-color: var(--color-slate-500);
+        }
+        .navbar-menu {
+            max-width: 200px;
+            grid-area: buttons;
+        }
+        .logo-img {
+            grid-area: image;
+            max-width: 100px;
+            max-height: 100px;
+        }
     }
 
-    .loginform {
+    .loginformContainer {
         display: grid;
-        grid-template-rows: 100px 1fr 100px;
-        grid-template-areas: "login" "invoerveld";
+        grid-template-rows: 50px 50px 1fr 100px;
+        grid-template-areas: "login" "loginError" "invoerveld";
         background-color: hsl(215.4 15.8% 48.4%);
         place-items: center;
         grid-area: loginform;
-        aspect-ratio: 1/1;
         border-radius: 12px;
         margin: 30px;
+        button {
+            margin-top: 4px;
+            padding: 8px;
+        }
     } 
+
     .invoerveld {
         grid-area: invoerveld;
-        input {
-            margin-top: 10px;
-            width: minmax(100px, 300px);
+        label {
+            display: flex;
+            flex-direction: column;
+            h3 {
+                margin-bottom: 0;
+            }
         }
+        input {
+            width: 100%;
+            /* min-width: 240px; */
+            min-height: 24px;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        input:hover {
+            background-color: hsl(214.3 25.9% 94.7%);
+        }
+        
+
     }
-    .registerform {
+    .registerformContainer {
         display: grid;
-        grid-template-rows: 100px 1fr 100px;
-        grid-template-areas: "login" "invoerveld";
+        grid-template-rows: 50px 50px 1fr 100px;
+        grid-template-areas: "login" "loginError" "invoerveld";
         background-color: hsl(215.4 15.8% 48.4%);
         place-items: center;
         grid-area: registerform;
-        aspect-ratio: 1/1;
         border-radius: 12px;
         margin: 30px;
     } 
+    .loginFailedMessage {
+        grid-area: loginError;
+        color: darkred;
+    }
+    .registerFailedMessage {
+        grid-area: loginError;
+        color: darkred;
+    }
+    .containerTitle {
+        padding-top: 24px;
+    }
+    .hidden {
+        opacity: 0;
+    }
     @media (min-width: 768px) {
-    body{
+    body {
         display: grid;
         grid-template-rows: 120px minmax(400px,1fr) 1fr;
         grid-template-columns: 1fr minmax(300px, 1fr) minmax(300px, 1fr) 1fr;
@@ -81,69 +133,64 @@
 </head>
 <body>
     <div class="navbar">
+        <img src="logo.png" class="logo-img">
         <div class="navbar-menu">
+
             <a href="index.html">Memory</a>
-            <a id="login-link" href="login.html">Login</a>
             <a id="logout-link" href="#">Logout</a>
         </div>
     </div>
 
     </div>
-    <div class="loginform">
-        <h1>Login</h1>
-        <form onsubmit="attemptLogin(event)">
+    <div class="loginformContainer">
+        <h1 class="containerTitle">Login</h1>
+        <span class="loginFailedMessage hidden" id="loginError"></span>
+        <form id="loginForm">
             <div class="invoerveld">
                 <label for="gebruikersnaam">
-                    Gebruikersnaam
-                    <br>
-                    <input type="text" name="gebruikersnaam" value="gebruikersnaam">
+                    <h3>Gebruikersnaam</h3>
+                    <input type="text" name="gebruikersnaam" value="">
                 </label>
             </div>
-            <br>
+
 
             <div class="invoerveld">
                 <label for="wachtwoord">
-                    Wachtwoord
-                    <br>
-                    <input type="text" name="wachtwoord" value="wachtwoord">
+                    <h3>Wachtwoord</h3>
+                    <input type="text" name="wachtwoord" value="">
                 </label>
             </div>
-            <br>
-            <br>
             <input type="submit" value="Inloggen">
         </form>
     </div>
-    <div class="registerform">
-        <h1>Register</h1>
-        <form onsubmit="attemptRegister(event)">
+    <div class="registerformContainer">
+        <h1 class="containerTitle">Register</h1>
+        <span class="registerFailedMessage hidden" id="registerError"></span>
+        <form id="registerForm">
             <div class="invoerveld">
                 <label for="email">
-                    E-mail
-                    <br>
-                <input type="text" name="email" value="email">
+                    <h3>E-mail</h3>
+                <input type="text" name="email" value="">
                 </label>
             </div>
-            <br>
+
             <div class="invoerveld">
                 <label for="gebruikersnaam">
-                    Gebruikersnaam
-                    <br>
-                    <input type="text" name="gebruikersnaam" value="gebruikersnaam">
+                    <h3>Gebruikersnaam</h3>
+                    <input type="text" name="gebruikersnaam" value="">
                 </label>
             </div>
-            <br>
+
             <div class="invoerveld">
                 <label for="wachtwoord">
-                    Wachtwoord
-                    <br>
-                    <input type="text" name="wachtwoord" value="wachtwoord">
+                    <h3>Wachtwoord</h3>
+                    <input type="text" name="wachtwoord" value="">
                 </label>
             </div>
-                        <br>
-            <br>
             <input type="submit" value="Registreer">
         </form>
     </div>
-<script src="scripts.js"></script>
+<script src="main.js" type="module"></script>
+<script src="login.js" type="module"></script>
 </body>
 </html>
