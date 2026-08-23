@@ -9,6 +9,12 @@ export async function attemptLogin(event) {
   const Wachtwoord = formData.get("wachtwoord");
   const LoginError = document.getElementById("loginError")
   errorCleanup()
+
+    if (!GebruikersNaam || !Wachtwoord ) {
+    LoginError.innerHTML = "Vul alles in!"
+    LoginError.classList.remove("hidden")
+    return
+  }
   try {
     const response = await fetch("http://localhost:8000/memory/login", {
       method: "POST",
