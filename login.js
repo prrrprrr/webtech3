@@ -47,8 +47,14 @@ export async function attemptRegister(event) {
   const Wachtwoord = formData.get("wachtwoord");
   const Email = formData.get("email");
   const RegisterError = document.getElementById("registerError")
-  errorCleanup()
+  const emailInput = document.getElementById("email");
 
+  errorCleanup()
+  if (!emailInput.checkValidity()) {
+      RegisterError.textContent = "Voer een geldig e-mailadres in.";
+      RegisterError.classList.remove("hidden");
+      return;
+  }
   if (!GebruikersNaam || !Wachtwoord || !Email ) {
     RegisterError.innerHTML = "Vul alles in!"
     RegisterError.classList.remove("hidden")

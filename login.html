@@ -157,20 +157,20 @@
             <div class="invoerveld">
                 <label for="wachtwoord">
                     <h3>Wachtwoord</h3>
-                    <input type="text" name="wachtwoord" value="">
+                    <input type="password" name="wachtwoord" value="">
                 </label>
             </div>
             <input type="submit" value="Inloggen">
         </form>
     </div>
     <div class="registerformContainer">
-        <h1 class="containerTitle">Register</h1>
+        <h1 class="containerTitle">Registreer</h1>
         <span class="registerFailedMessage hidden" id="registerError"></span>
-        <form id="registerForm">
+        <form id="registerForm" novalidate>
             <div class="invoerveld">
                 <label for="email">
                     <h3>E-mail</h3>
-                <input type="text" name="email" value="">
+                <input type="email" name="email" value="" id="email">
                 </label>
             </div>
 
@@ -184,7 +184,7 @@
             <div class="invoerveld">
                 <label for="wachtwoord">
                     <h3>Wachtwoord</h3>
-                    <input type="text" name="wachtwoord" value="">
+                    <input type="password" name="wachtwoord" value="">
                 </label>
             </div>
             <input type="submit" value="Registreer">

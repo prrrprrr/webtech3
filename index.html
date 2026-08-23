@@ -13,8 +13,8 @@
         </div>
         <div class="navbar-menu">
             <div class="nav-menu-login">
-                <a id="login-link" href="login.html">Login</a>
-                <a id="logout-link" href="#">Logout</a>
+                <a id="login-link" href="login.html">Inloggen</a>
+                <a id="logout-link" href="#">Uitloggen</a>
             </div>
 
         </div>
@@ -23,7 +23,7 @@
         <div class="gameInfo">
             <p>Beurten: <span id="turnCounterSpan">0</span></p>
             <p>Gevonden paren <span id="pairCounterSpan">0</span>/<span id="totalPairSpan">18</span></p>
-            <p>Time spent:<br><span id="timerDisplay">0</span> seconds</p>
+            <p>Tijd verlopen:<br><span id="timerDisplay">0</span> seconden</p>
         </div>
         <div class="memory" id="memoryBoard"></div>
     </div>
@@ -31,7 +31,7 @@
         <div class="highscores" id="HighScores">
         </div>
         <div class="newGameDiv">
-            <h3>Card Type</h3>
+            <h3>Kaartsoort</h3>
             <form class="newGameForm" id="newGameForm">
                 <div class="cardTypeInput">
                     <div class="radioInputOption">
@@ -42,24 +42,24 @@
                     </div>
                     <div class="radioInputOption">
                         <label for="dogs">
-                            Dogs
+                            Honden
                             <input type="radio" name="cardTypeSelect" id="dogs" value="dogs">
                         </label><br>
                     </div>
                     <div class="radioInputOption">
                         <label for="cats">
-                            Cats
+                            Katten
                             <input type="radio" name="cardTypeSelect" id="cats" value="cats">
                         </label><br>
                     </div>
                     <div class="radioInputOption">
                         <label for="random">
-                            Random
+                            Lorem Picsum
                             <input type="radio" name="cardTypeSelect" id="random" value="picsum">
-                        </label><br>
+                        </label>
                     </div>
                 </div>
-                <h3>Board Size</h3>
+                <h3>Afmetingen bord</h3>
                 <div class="boardSizeInput">
                     <div class="radioInputOption">
                         <label for="4">
@@ -83,49 +83,56 @@
                         
                     </div>
                 </div>
-                <h3>Shuffle</h3>
+                <h3>Shufflemodus</h3>
                 <div class="shuffleMenu">
                     <div class="radioInputOption">
                         <label for="noShuffle">
-                            None
+                            Geen
                             <input type="radio" name="shuffleRadio" id="noShuffle" value="none">
                         </label>
                     </div>
                     <div class="radioInputOption">
                         <label for="easyShuffle">
-                            Easy
+                            Makkelijk
                             <input type="radio" name="shuffleRadio" id="easyShuffle" value="2">
                         </label>
                     </div>
                    <div class="radioInputOption">
                         <label for="MediumSuffle">
-                            Medium
+                            Normaal
                             <input type="radio" name="shuffleRadio" id="MediumSuffle" value="1.5">
                         </label>
                     </div>
                    <div class="radioInputOption">
                         <label for="HardShuffle">
-                            Hard
+                            Moeilijk
                             <input type="radio" name="shuffleRadio" id="HardShuffle" value="1">
                         </label>
                     </div>
                 </div>
                 <div class="colorSelect">
-                    <label for="OpenCardColor">
-                        <input type="color" name="openCardColor" id="OpenCardColor" value="#a4b6cb">
-                        openCardColor
-                    </label>
+                    <div class="colorInputOption">
+                        <h3>Kaartkleur open</h3>
+                        <label for="OpenCardColor">
+                            <input type="color" name="openCardColor" id="OpenCardColor" value="#a4b6cb">
+                        </label>
+                    </div>
+                     <div class="colorInputOption">
+                        <h3>Kaartkleur gesloten</h3>
                     <label for="ClosedCardColor">
                         <input type="color" name="closedCardColor" id="ClosedCardColor" value="#3d4756">
-                        closedCardColor
+                        
                     </label>
-                    <label for="FoundCardColor">
-                        <input type="color" name="foundCardColor" id="FoundCardColor" value="#64748b">
-                        foundCardColor
-                    </label>
+                     </div>
+                    <div class="colorInputOption">
+                        <h3>Kaartkleur gevonden</h3>
+                        <label for="FoundCardColor">
+                            <input type="color" name="foundCardColor" id="FoundCardColor" value="#64748b">
+                        </label>
+                    </div>
                 </div>
 
-                <input type="submit" value="New Game" id="newGameFormButton">
+                <input type="submit" value="Nieuw spel" id="newGameFormButton">
 
             </form>
         </div>
@@ -133,9 +140,9 @@
 
     <div id="gameWonModal" class="modal-overlay hidden">
     <div class="modal-box">
-        <h2>🎉 Victory! 🎉</h2>
-        <p>Incredible job! You cleared the board with <span id="scoreSpan"></span> points!</p>
-        <button id="closeBtn">Close</button>
+        <h2>🎉 Gefeliciteerd! 🎉</h2>
+        <p>Goed gedaan! Je hebt alle paren gevonden met <span id="scoreSpan"></span> punten!</p>
+        <button id="closeBtn">Sluiten</button>
     </div>
 </div>
 <script src="main.js" type="module"></script>

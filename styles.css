@@ -147,7 +147,8 @@ body{
 }
 .colorSelect{
     padding: 16px;
-    display: grid;
+    display: flex;
+    justify-content: space-between;
 }
 
 .card{
